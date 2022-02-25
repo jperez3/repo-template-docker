@@ -1,4 +1,4 @@
-name: AWS ECR Push
+name: ecr-push-default
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@master
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-to-assume: ${{ secrets.GHA_DEFAULT_ROLE_ARN }}
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Login to Amazon ECR
@@ -41,6 +41,7 @@ jobs:
         tags: |
           type=sha,prefix=
           type=ref,event=branch
+          type=raw,value={{branch}}-{{date 'YYYYMMDD'}}-{{sha}}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
